@@ -30,6 +30,8 @@
 .page-title {
   margin-top: 2rem;
   margin-left: 2rem;
+  color: var(--color-primary);
+  font-size: var(--fs-2);
 }
 .upload-from {
   padding: 2rem;
