@@ -157,7 +157,7 @@
 .upload-form-card h2,
 .submission-list-card h2,
 .assignment-list-card h2 {
-  color: #6a5af9;
+  color: var(--color-heading);
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
 }

@@ -112,8 +112,9 @@
   text-align: left;
   padding: 15px 10px;
   border-bottom: 1px solid #eee;
-  color: #666666;
-  font-weight: normal;
+  /* color: #666666; */
+color: var(--color-heading);
+  font-weight: 600;
 }
 
 .schedule-table td {
@@ -172,4 +173,19 @@
 
     max-height: 25rem;
   }
+}
+#enrollmentTableBody tr{
+  cursor: pointer;
+  height: 7rem;
+}
+#enrollmentTableBody th{
+  border: 1px solid var(--color-grey-dark-2);
+  color: var(--color-grid-1);
+}
+#scheduleTableBody tr{
+  cursor: pointer;
+  height: 7rem;
+}
+#scheduleTableBody th{
+  border: 1px solid var(--color-grey-dark-2);
 }
