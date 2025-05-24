@@ -132,7 +132,7 @@
 
 .report-card h3 {
   font-size: var(--fs-5);
-  color: var(--color-primary);
+  color: var(--color-heading);
   margin-bottom: 1.5rem;
 }
 
@@ -304,7 +304,7 @@
 
 .modal-header h2 {
   margin: 0;
-  color: #5955b3;
+  color: var(--color-heading);
   font-family: 'Poppins', sans-serif;
 }
 
