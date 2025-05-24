@@ -175,6 +175,7 @@
   align-self: flex-end;
   background-color: var(--color-primary);
   color: var(--color-grey-light-1);
+  /* border-radius: 2rem 0 2rem 2rem; */
 }
 .message.sent .message__sender-name {
   color: #f9d7d7;

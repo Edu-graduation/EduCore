@@ -221,16 +221,16 @@
   text-decoration: none;
   font-weight: 700;
 }
-/* .section .session__file {
-  color: #f9bec3;
+.section .session__file {
+  color: #f49ca3;
 }
 .section {
-  border-color: #f9bec3;
+  border-color: #f49ca3;
 }
 .section .session__number span {
   background-color: #f9bec3;
-  color: #333;
-} */
+  color: var(--color-primary-dark);
+}
 .upload-btn {
   font-family: inherit;
   display: flex;

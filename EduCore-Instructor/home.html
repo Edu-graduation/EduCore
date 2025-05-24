@@ -103,13 +103,6 @@
         color: #ff9800;
       }
 
-      /* Section title styling */
-      .schedule-header h2 {
-        font-size: 1.5rem;
-        margin-bottom: 15px;
-        color: #333;
-        font-weight: 600;
-      }
     </style>
   </head>
   <body>
@@ -117,7 +110,7 @@
       <!-- Sidebar -->
       <div class="sidebar">
         <div class="logo">
-          <h2><img src="src/images/logo.png" class="img-logo" />EDU</h2>
+          <h2><img src="src/images/logo.png" class="img-logo" alt="logo" />EDU</h2>
         </div>
         <ul class="sidebar__list">
           <li id="home" class="Sli homeli active-button">
@@ -187,6 +180,7 @@
         </div>
 
         <!-- Schedule Section (Middle) -->
+         <div class="schedules-section">
         <div class="schedule-section">
           <div class="schedule-header">
             <h2>Today's Schedule</h2>
@@ -204,7 +198,7 @@
             <table class="schedule-table">
               <thead>
                 <tr>
-                  <th id="course">Course</th>
+                  <th colspan="2" id="course">Course</th>
                   <th>Time</th>
                   <th>Place</th>
                   <th id="type">Type</th>
@@ -238,6 +232,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script type="module" src="src/js/main.js"></script>

@@ -206,8 +206,8 @@ async function renderDailyEvents(eventsPromise) {
         eventElement.dataset.eventId = event.event_id;
 
         eventElement.innerHTML = `
-        <p class="daily__event-title">${event.event_name}</p>
-        <p class="daliy__event-description">${event.event_details || ""}</p>
+        <p class="daily__event-title">${event.event_name.slice(0,15)}</p>
+        <p class="daliy__event-description">${event.event_details.slice(0,25) || ""}</p>
       `;
 
         eventRow.appendChild(eventElement);
@@ -323,8 +323,8 @@ export function attachDayClickListeners() {
             eventElement.dataset.eventId = event.event_id;
 
             eventElement.innerHTML = `
-            <p class="daily__event-title">${event.event_name}</p>
-            <p class="daliy__event-description">${event.event_details || ""}</p>
+            <p class="daily__event-title">${event.event_name.slice(0,15)}</p>
+            <p class="daliy__event-description">${event.event_details.slice(0,25) || ""}</p>
           `;
 
             eventRow.appendChild(eventElement);

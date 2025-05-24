@@ -316,3 +316,26 @@
 .file-button-outline i {
   font-size: 16px;
 }
+@media screen and (min-width:85rem) {
+  .Title_container{
+    margin-top: 0rem;
+  }
+  .course__details{
+    margin-top: -2rem;
+  }
+  .cards-container{
+    margin-top: -2rem;
+  }
+}
+@media screen and (min-width:90rem) {
+  .Title_container{
+    margin-top: -2rem;
+  }
+  .course__details{
+    margin-top: -5rem;
+  }
+  .cards-container{
+    margin-top: 4rem;
+  }
+}
+

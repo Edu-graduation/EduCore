@@ -917,7 +917,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Check if user is logged in
   // Initialize activities view
   renderActivities();
-
+  const projectsContainer = document.querySelector(".projects-container");
+  projectsContainer.addEventListener('wheel', function (event) {
+    if (event.deltaY !== 0) {
+      event.preventDefault();
+      projectsContainer.scrollLeft += event.deltaY;
+    }
+  });
   // Add navigation event listeners
   // const backButton = document.querySelector(".back-button");
   // if (backButton) {

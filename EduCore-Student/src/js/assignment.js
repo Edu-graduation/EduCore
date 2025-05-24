@@ -762,21 +762,15 @@ async function getAssignmentById(assignmentId) {
 
 // Initialize page
 document.addEventListener("DOMContentLoaded", () => {
-  // Check if user is logged in
-
-  // Add custom styles
-  // addCustomStyles();
-
+  const assignmentsContainer = document.querySelector(".assignments-container");
+  assignmentsContainer.addEventListener('wheel', function (event) {
+    if (event.deltaY !== 0) {
+      event.preventDefault();
+      assignmentsContainer.scrollLeft += event.deltaY;
+    }
+  });
   // Initialize assignments view
   renderAssignments();
-
-  // Add navigation event listeners
-  // const backButton = document.querySelector(".back-button");
-  // if (backButton) {
-  //   backButton.addEventListener("click", () => {
-  //     window.location.href = "dashboard.html";
-  //   });
-  // }
 
   // Add refresh button functionality
   const refreshButton = document.querySelector(".refresh-button");

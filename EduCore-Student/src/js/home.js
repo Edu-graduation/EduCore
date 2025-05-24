@@ -987,7 +987,12 @@ document.addEventListener("DOMContentLoaded", function() {
   const deadlineBoxes = document.querySelector('.deadlineBoxes');
   const prevButton = document.getElementById('prev');
   const nextButton = document.getElementById('next');
-  
+  deadlineBoxes.addEventListener('wheel', function (event) {
+    if (event.deltaY !== 0) {
+      event.preventDefault();
+      deadlineBoxes.scrollLeft += event.deltaY;
+    }
+  });
   // Get the width of a single box plus its gap
   function getScrollDistance() {
     const box = document.querySelector('.deadlineBoxes .box');

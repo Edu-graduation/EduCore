@@ -240,7 +240,7 @@ async function updateSessionNumbers(courseId, sessionTypeValue = "lecture") {
 
   // If no sessions found, add a placeholder option
   if (count === 0) {
-    sessionNumber.innerHTML = `<option value="">No ${sessionTypeValue}s available</option>`;
+    sessionNumber.innerHTML = `<option value="">No ${isInstitutionSchool() ? "lessons" : sessionTypeValue}s available</option>`;
   } else {
     // Add options for each session
     for (let i = 0; i < count; i++) {
@@ -253,8 +253,12 @@ async function renderFormData() {
   const sessionNumber = document.querySelector("#session-number");
   const courseName = document.querySelector("#course-name");
   const sessionType = document.querySelector("#session-type");
-
+  
   courseName.innerHTML = "";
+  if(isInstitutionSchool()){
+    sessionType.innerHTML = "";
+    sessionType.innerHTML += `<option value="lecture">Lesson</option>`;
+  }
   sessionType.value = "lecture";
 
   // Get instructor courses

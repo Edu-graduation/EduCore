@@ -8,19 +8,15 @@
   box-shadow: 0 0.4rem 2rem rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
-  /* overflow: scroll; */
-  scrollbar-width: none;
+  gap: 2rem;
 }
 
 .top-section {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  gap: 5rem;
+  justify-content: center;
+  gap: 3rem;
 }
 
 .profile-card {
@@ -28,25 +24,26 @@
   border-radius: 15px;
   padding: 20px;
   width: 45%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 6px var(--color-primary); */
 }
 
 .welcome-card {
-  background: linear-gradient(135deg, #e0e8ff, #d7f9eb);
+  background: linear-gradient(135deg, var(--color-grid-1), var(--color-grid-2));
   border-radius: 15px;
   padding: 4rem;
-  width: 80rem;
+  width: 60rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
 }
 
 .welcome-card h2 {
-  color: #444;
+  color: var(--color-grey-light-1);
   margin-bottom: 10px;
   font-size: 24px;
 }
 
 .welcome-card p {
-  color: #666;
+  color: var(--color-grey-light-4);
 }
 
 .university-name {
@@ -55,6 +52,15 @@
   font-weight: bold;
   margin-bottom: 15px;
   color: #333;
+  /* background: linear-gradient(
+    to right,
+    var(--color-grid-1),
+    var(--color-grid-2)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent; */
+
 }
 
 .profile-details {
@@ -75,17 +81,28 @@
   background-color: white;
   border-radius: 15px;
   padding: 20px;
-  width: 110rem;
+  /* width: 60rem;
+  min-width: 35rem;
+  max-width: 60rem; */
+  width: 100%;
   margin-top: 20px;
   box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
+  height: 100%;
+  min-height: 35rem;
 }
 
 .schedule-header {
-  background-color: #9aafd9;
+  /* background-color: #9aafd9; */
+  background: linear-gradient(135deg, var(--color-grid-1), var(--color-grid-2));
   padding: 15px;
   border-radius: 10px;
 }
-
+.schedule-header h2{
+  color: var(--color-grey-light-1);
+  font-size: var(--fs-5);
+  margin-bottom: 15px;
+  font-weight: 600;
+}
 .schedule-table {
   width: 100%;
   border-collapse: collapse;
@@ -119,7 +136,7 @@
   align-items: center;
 }
 .schedule-table tr:hover {
-  background-color: #cddaef;
+  background-color: var(--color-grey-light-2);
 }
 
 .tag {
@@ -141,4 +158,18 @@
 .tag-quiz {
   color: #ff9451;
   background-color: #fff2e6;
+}
+.schedules-section{
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+@media screen and (max-width: 72em) {
+  .main-content{
+    gap: 0;
+  }
+  .schedule-section{
+
+    max-height: 25rem;
+  }
 }

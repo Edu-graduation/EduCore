@@ -243,9 +243,9 @@
 .time {
   display: flex;
   flex-direction: column;
-  gap: 7rem;
+  gap: 8rem;
   min-width: max-content;
-  /* justify-content: space-evenly; */
+  /* justify-content: space-between; */
   margin-right: 1rem;
   font-size: var(--fs-7);
 }
@@ -953,3 +953,4 @@ textarea {
   width: 20rem;
 
 } */
+

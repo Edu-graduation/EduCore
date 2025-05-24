@@ -325,7 +325,14 @@ import { isInstitutionSchool } from "./src/js/app.js";
                 // -------------------------
                 // عرض المحاضرات في الكروت
                 // -------------------------
-                
+                const container = document.querySelector('.cards-container');
+
+container.addEventListener('wheel', function (event) {
+  if (event.deltaY !== 0) {
+    event.preventDefault();
+    container.scrollLeft += event.deltaY;
+  }
+});
                 if(isInstitutionSchool()){
                     const assignment= document.getElementById("assignment");
                     assignment.textContent = "Homework";
