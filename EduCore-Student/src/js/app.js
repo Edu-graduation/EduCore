@@ -6,8 +6,8 @@ const supabaseKey =
 export const supaClient = createClient(supabaseProjectUrl, supabaseKey);
 const studentId = sessionStorage.getItem("studentId");
 
-const logOutButton = document.querySelector(".log-out");
-logOutButton.addEventListener("click", logOut);
+// const logOutButton = document.querySelector(".log-out");
+// logOutButton.addEventListener("click", logOut);
 
 function isUserLoggedIn() {
   if (!studentId && !window.location.href.includes("index.html")) {
@@ -34,8 +34,8 @@ export async function getUserName(studentId) {
   }
 }
 function logOut() {
-  const confirmation = confirm("Are you sure you want to log out!");
-  if (!confirmation) return;
+  // const confirmation = confirm("Are you sure you want to log out!");
+  // if (!confirmation) return;
   sessionStorage.removeItem("studentId");
   sessionStorage.removeItem("courseId");
   sessionStorage.removeItem("institution_id");
@@ -107,3 +107,40 @@ export function isInstitutionSchool() {
 }
 }
 isInstitutionSchool();
+const logOutButton = document.querySelector(".log-out");
+const confirmationModal = document.getElementById("confirmationModal");
+const closeModal = document.getElementById("logout-closeModal");
+const cancelButton = document.getElementById("logout-cancelButton");
+const confirmButton = document.getElementById("logout-confirmButton");
+confirmButton.addEventListener("click", logOut);
+logOutButton.addEventListener("click", () => {
+  confirmationModal.classList.add("active");
+  confirmationModal.classList.add("open");
+  confirmationModal.style.display = "block";
+});
+
+closeModal.addEventListener("click", () => {
+  confirmationModal.classList.add("slideOut");
+  setTimeout(() => {
+    confirmationModal.classList.remove("active", "slideOut");
+    confirmationModal.style.display = "none";
+  }, 500); // Wait for the animation to complete (500ms)
+});
+
+cancelButton.addEventListener("click", () => {
+  confirmationModal.classList.add("slideOut");
+  setTimeout(() => {
+    confirmationModal.classList.remove("open", "slideOut");
+    confirmationModal.style.display = "none";
+  }, 500); // Wait for the animation to complete (300ms)
+});
+
+window.addEventListener("click", (event) => {
+  if (event.target === confirmationModal) {
+    confirmationModal.classList.remove("open");
+    // setTimeout(() => {
+      confirmationModal.classList.remove("active");
+      confirmationModal.style.display = "none";
+    // }, 500); // Wait for the animation to complete (500ms)
+  }
+});

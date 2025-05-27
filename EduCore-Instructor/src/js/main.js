@@ -9,7 +9,8 @@ const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53d3FzcWt3bWtrdXVuY3p1Y2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1MzEyODIsImV4cCI6MjA2MjEwNzI4Mn0.EF6CGrpM3bjxBo4-ItU3S1BPjfVHdv2HnvoeAdfPZug";
 export const supaClient = createClient(supabaseProjectUrl, supabaseKey);
 const instructorId = sessionStorage.getItem("instructorId");
-const logoutButton = document.querySelector(".log-out");
+const logOutButton = document.querySelector(".log-out");
+// const logoutButton = document.querySelector(".log-out");
 function isUserLoggedIn() {
   if (!instructorId && !window.location.href.includes("index.html")) {
     alert("sign in first");
@@ -19,14 +20,14 @@ function isUserLoggedIn() {
 }
 isUserLoggedIn();
 function logOut() {
-  const confirmation = confirm("Are you sure you want to log out!");
-  if (!confirmation) return;
+  // const confirmation = confirm("Are you sure you want to log out!");
+  // if (!confirmation) return;
   sessionStorage.removeItem("instructorId");
   sessionStorage.removeItem("institution_id");
   sessionStorage.removeItem("institution_name");
   window.location.href = "../../../index.html";
 }
-logoutButton.addEventListener("click", logOut);
+// logOutButton.addEventListener("click", logOut);
 export async function getInstructorName(instructorId) {
   const { data, error } = await supaClient
     .from("instructor")
@@ -148,3 +149,41 @@ export function isInstitutionSchool() {
 //   }
 // }
 // });
+
+
+const confirmationModal = document.getElementById("confirmationModal");
+const closeModal = document.getElementById("logout-closeModal");
+const cancelButton = document.getElementById("logout-cancelButton");
+const confirmButton = document.getElementById("logout-confirmButton");
+confirmButton.addEventListener("click", logOut);
+logOutButton.addEventListener("click", () => {
+  confirmationModal.classList.add("active");
+  confirmationModal.classList.add("open");
+  confirmationModal.style.display = "block";
+});
+
+closeModal.addEventListener("click", () => {
+  confirmationModal.classList.add("slideOut");
+  setTimeout(() => {
+    confirmationModal.classList.remove("active", "slideOut");
+    confirmationModal.style.display = "none";
+  }, 500); // Wait for the animation to complete (500ms)
+});
+
+cancelButton.addEventListener("click", () => {
+  confirmationModal.classList.add("slideOut");
+  setTimeout(() => {
+    confirmationModal.classList.remove("open", "slideOut");
+    confirmationModal.style.display = "none";
+  }, 500); // Wait for the animation to complete (300ms)
+});
+
+window.addEventListener("click", (event) => {
+  if (event.target === confirmationModal) {
+    confirmationModal.classList.remove("open");
+    // setTimeout(() => {
+      confirmationModal.classList.remove("active");
+      confirmationModal.style.display = "none";
+    // }, 500); // Wait for the animation to complete (500ms)
+  }
+});
