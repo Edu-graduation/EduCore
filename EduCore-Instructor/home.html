@@ -199,7 +199,7 @@
               <table class="schedule-table">
                 <thead>
                   <tr>
-                    <th colspan="1" id="course">Course</th>
+                    <th id="course">Course</th>
                     <th>Time</th>
                     <th id="place">Place</th>
                     <th id="type">Type</th>
@@ -734,7 +734,7 @@
 
           const placeCell = document.createElement("td");
           placeCell.textContent = item.place;
-          placeCell.colSpan = 2;
+          // placeCell.colSpan = 2;
           row.appendChild(placeCell);
 
           const typeCell = document.createElement("td");
