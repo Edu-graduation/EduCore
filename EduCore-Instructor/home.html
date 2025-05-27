@@ -102,7 +102,6 @@
         background-color: rgba(255, 152, 0, 0.1);
         color: #ff9800;
       }
-
     </style>
   </head>
   <body>
@@ -110,7 +109,9 @@
       <!-- Sidebar -->
       <div class="sidebar">
         <div class="logo">
-          <h2><img src="src/images/logo.png" class="img-logo" alt="logo" />EDU</h2>
+          <h2>
+            <img src="src/images/logo.png" class="img-logo" alt="logo" />EDU
+          </h2>
         </div>
         <ul class="sidebar__list">
           <li id="home" class="Sli homeli active-button">
@@ -180,65 +181,66 @@
         </div>
 
         <!-- Schedule Section (Middle) -->
-         <div class="schedules-section">
-        <div class="schedule-section">
-          <div class="schedule-header">
-            <h2>Today's Schedule</h2>
-            <p
-              id="scheduleStatusMessage"
-              style="
-                color: #666;
-                font-size: 14px;
-                margin-top: -10px;
-                margin-bottom: 10px;
-              "
-            ></p>
+        <div class="schedules-section">
+          <div class="schedule-section">
+            <div class="schedule-header">
+              <h2>Today's Schedule</h2>
+              <p
+                id="scheduleStatusMessage"
+                style="
+                  color: #666;
+                  font-size: 14px;
+                  margin-top: -10px;
+                  margin-bottom: 10px;
+                "
+              ></p>
+            </div>
+            <div class="scrollable-table-container">
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th colspan="1" id="course">Course</th>
+                    <th>Time</th>
+                    <th id="place">Place</th>
+                    <th id="type">Type</th>
+                  </tr>
+                </thead>
+                <tbody id="scheduleTableBody">
+                  <!-- Schedule data will be loaded here -->
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="scrollable-table-container">
-            <table class="schedule-table">
-              <thead>
-                <tr>
-                  <th colspan="2" id="course">Course</th>
-                  <th>Time</th>
-                  <th>Place</th>
-                  <th id="type">Type</th>
-                </tr>
-              </thead>
-              <tbody id="scheduleTableBody">
-                <!-- Schedule data will be loaded here -->
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tbody>
-            </table>
-          </div>
-        </div>
 
-        <div class="schedule-section">
-          <div class="schedule-header">
-            <h2 class="schedule-title">Course Management</h2>
-          </div>
-          <div class="scrollable-table-container">
-            <table class="schedule-table">
-              <thead>
-                <tr>
-                  <th class="course_name">Course Name</th>
-                  <th>Students Enrolled</th>
-                </tr>
-              </thead>
-              <tbody id="enrollmentTableBody"></tbody>
-            </table>
+          <div class="schedule-section">
+            <div class="schedule-header">
+              <h2 class="schedule-title">Course Management</h2>
+            </div>
+            <div class="scrollable-table-container">
+              <table class="schedule-table">
+                <thead>
+                  <tr>
+                    <th class="course_name">Course Name</th>
+                    <th>Students Enrolled</th>
+                  </tr>
+                </thead>
+                <tbody id="enrollmentTableBody"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script type="module" src="src/js/main.js"></script>
-    <script>
+    <script type="module">
       // API and Supabase configuration
       // import { getInstitutionId } from "./src/js/main.js";
+      import { isInstitutionSchool } from "./src/js/main.js";
       const API_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53d3FzcWt3bWtrdXVuY3p1Y2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1MzEyODIsImV4cCI6MjA2MjEwNzI4Mn0.EF6CGrpM3bjxBo4-ItU3S1BPjfVHdv2HnvoeAdfPZug";
       const INSTRUCTOR_BASE_URL =
@@ -329,7 +331,7 @@
 
               const institutionMappingData =
                 await institutionMappingResponse.json();
-  
+
               if (institutionMappingData.length > 0) {
                 institutionId = institutionMappingData[0].institution_id;
 
@@ -732,12 +734,12 @@
 
           const placeCell = document.createElement("td");
           placeCell.textContent = item.place;
+          placeCell.colSpan = 2;
           row.appendChild(placeCell);
 
           const typeCell = document.createElement("td");
           const typeTag = document.createElement("span");
           typeTag.textContent = item.type;
-
           if (item.type.toLowerCase() === "lecture") {
             typeTag.className = "tag tag-lecture";
           } else if (item.type.toLowerCase() === "lab") {
@@ -795,7 +797,14 @@
         if (!institutionId) return;
 
         if (institutionId && typeHeader) {
-          typeHeader.style.display = "none";
+          // typeHeader.style.display = "none";
+          if (isInstitutionSchool()) {
+            typeHeader.style.display = "none";
+            document.querySelector("#place").colSpan = 2; // Adjust colspan for place header
+          } else {
+            typeHeader.style.display = "table-cell";
+          }
+
           const rows = document.querySelectorAll(
             ".schedule-table tbody tr td type "
           );

@@ -164,18 +164,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem;
   background-color: var(--color-grey-light-2);
   border-radius: 1rem;
   box-shadow: 0 0.8rem 0.8rem rgba(0, 0, 0, 0.1);
   font-size: var(--fs-6);
   font-weight: 700;
-  color: var(--color-primary);
   position: sticky;
   top: 0rem;
+  padding: 1.6rem 1rem;
+  background: linear-gradient(135deg, #6a5af9, #8a7af9);
+  color: var(--color-grey-light-1);
 }
 .sessions-header__number {
-  width: 5%;
+  text-wrap: nowrap;
 }
 
 .session:hover {
