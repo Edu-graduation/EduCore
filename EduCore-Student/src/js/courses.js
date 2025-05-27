@@ -1,4 +1,3 @@
-
 import { supaClient } from "./app.js";
 
 const institutionId = sessionStorage.getItem("institution_id");
@@ -19,7 +18,6 @@ async function getInstructorInstitution() {
   }
 
   const instructorsId = data.map((instructor) => instructor.instructor_id);
-  console.log("Instructors at this institution:", instructorsId);
   return instructorsId;
 }
 
@@ -75,8 +73,6 @@ async function getStudentCourses() {
       courseInstructorMap[courseId].push(instructorId);
     }
   });
-
-  console.log("Course-Instructor Map:", courseInstructorMap);
   return courseInstructorMap;
 }
 
@@ -157,7 +153,6 @@ async function renderCourses() {
 
 renderCourses()
   .then(() => {
-    console.log("Courses rendered successfully");
     const coursesEl = document.querySelectorAll(".course");
 
     coursesEl.forEach((coursesEl) => {

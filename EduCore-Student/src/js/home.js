@@ -36,9 +36,9 @@ async function loadInitialData() {
     // 1. First get instructors for the institution
     if (!cache.instructors) {
       let institutionId;
-      if(!sessionStorage.getItem("institution_id")){
+      if (!sessionStorage.getItem("institution_id")) {
         institutionId = await getInstitutionId(studentId);
-      }else{
+      } else {
         institutionId = sessionStorage.getItem("institution_id");
       }
       const { data: instructorData, error: instructorError } = await supaClient
@@ -50,9 +50,11 @@ async function loadInitialData() {
         console.error("Error fetching institution data:", instructorError);
         return false;
       }
-      
-      cache.instructors = instructorData.map((instructor) => instructor.instructor_id);
-      
+
+      cache.instructors = instructorData.map(
+        (instructor) => instructor.instructor_id
+      );
+
       if (!cache.instructors.length) {
         console.error("No instructors found for this institution");
         return false;
@@ -66,18 +68,19 @@ async function loadInitialData() {
         .select("*, course:course_id(course_id, course_name)")
         .in("instructor_id", cache.instructors)
         .eq("student_id", studentId);
-      
+
       if (enrollmentError) {
         console.error("Error fetching enrollment data:", enrollmentError);
         return false;
       }
 
       // Store courses with their names already attached
-      cache.studentCourses = enrollmentData;      
+      cache.studentCourses = enrollmentData;
       // Also populate the courseNames cache
-      enrollmentData.forEach(enrollment => {
+      enrollmentData.forEach((enrollment) => {
         if (enrollment.course) {
-          cache.courseNames[enrollment.course_id] = enrollment.course.course_name;
+          cache.courseNames[enrollment.course_id] =
+            enrollment.course.course_name;
         }
       });
     }
@@ -105,8 +108,10 @@ function getStudentCourseIds() {
     console.warn("Student courses not loaded yet");
     return [];
   }
-  
-  const courseIds = cache.studentCourses.map(enrollment => enrollment.course_id);
+
+  const courseIds = cache.studentCourses.map(
+    (enrollment) => enrollment.course_id
+  );
   return courseIds;
 }
 // Format time to display as "At 8:00 AM"
@@ -123,7 +128,9 @@ function formatSessionTime(timeString) {
     }
     // Handle time-only format like "14:30:00"
     else {
-      const [hours, minutes] = timeString.split(":").map((num) => parseInt(num));
+      const [hours, minutes] = timeString
+        .split(":")
+        .map((num) => parseInt(num));
       time = new Date();
       time.setHours(hours, minutes, 0);
     }
@@ -262,23 +269,36 @@ function formatDateShort(dateString) {
   try {
     // Parse the date string
     const date = new Date(dateString);
-    
+
     if (isNaN(date.getTime())) {
       console.warn("Invalid date for short formatting:", dateString);
       return dateString; // Return original if invalid
     }
-    
+
     // Get day number (1-31)
     const day = date.getDate();
-    
+
     // Get month short name (Jan, Feb, etc.)
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     const month = months[date.getMonth()];
-    
+
     // Get weekday short name (Sun, Mon, etc.)
-    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const weekday = weekdays[date.getDay()];
-    
+
     // Format: "5 Nov Sun"
     return `${day} ${month} ${weekday}`;
   } catch (e) {
@@ -293,10 +313,10 @@ function isWithinNextWeek(dateString) {
       console.warn("Empty date string provided");
       return false;
     }
-    
+
     // Parse the date string
     const date = new Date(dateString);
-    
+
     if (isNaN(date.getTime())) {
       console.warn("Invalid date for weekly check:", dateString);
       return false;
@@ -310,7 +330,7 @@ function isWithinNextWeek(dateString) {
     const nextWeek = new Date(today);
     nextWeek.setDate(today.getDate() + 7);
     nextWeek.setHours(23, 59, 59, 999);
-    
+
     return date >= today && date <= nextWeek;
   } catch (e) {
     console.error("Date check error:", e, "for date:", dateString);
@@ -326,7 +346,9 @@ function createDeadlineBox(title, type, deadline) {
   box.className = "box";
 
   box.innerHTML = `
-    <div class="upper" ${title.length > 10 ? 'style="font-size: 1.5rem;"' : ''}>${title}</div>
+    <div class="upper" ${
+      title.length > 10 ? 'style="font-size: 1.5rem;"' : ""
+    }>${title}</div>
     <div class="lower">${type}</div>
     <div class="box__time-container">
       <p class="box__time">${formatDateShort(formattedDate)}</p>
@@ -346,36 +368,42 @@ async function fetchStudentSessionData() {
         return [];
       }
     }
-    
+
     if (!cache.todaySessions) {
       const courseIds = getStudentCourseIds();
-      
+
       if (!courseIds || courseIds.length === 0) {
         console.error("No course IDs found for student sessions");
         return [];
       }
-      
+
       // Fetch all sessions for student's courses in one request
       const { data, error } = await supaClient
         .from("session")
         .select("*")
         .in("course_id", courseIds);
-      
+
       if (error) {
         console.error("Error fetching session data:", error);
         return [];
       }
-      
+
       // Filter for today's sessions
-      const todaySessions = data.filter(session => isSessionToday(session))
-        .map(session => ({
+      const todaySessions = data
+        .filter((session) => isSessionToday(session))
+        .map((session) => ({
           ...session,
-          course_name: getCourseName(session.course_id)
+          course_name: getCourseName(session.course_id),
         }));
-        
+
+      todaySessions.sort((a, b) => {
+        const timeA = new Date(a.session_time).getTime();
+        const timeB = new Date(b.session_time).getTime();
+        return timeA - timeB;
+      });
       cache.todaySessions = todaySessions;
     }
-    
+
     return cache.todaySessions;
   } catch (error) {
     console.error("Error in fetchStudentSessionData:", error);
@@ -385,97 +413,103 @@ async function fetchStudentSessionData() {
 // Get all deadline data in a single function
 async function fetchAllDeadlineData() {
   const courseIds = getStudentCourseIds();
-  if (!courseIds.length) return { quizzes: [], assignments: [], activities: [] };
-  
+  if (!courseIds.length)
+    return { quizzes: [], assignments: [], activities: [] };
+
   // Parallel requests for better performance
   const [quizResult, assignmentResult] = await Promise.all([
     // Fetch quizzes
     supaClient.from("quiz").select("*").in("course_id", courseIds),
     // Fetch assignments
-    supaClient.from("assignment").select("*").in("course_id", courseIds)
+    supaClient.from("assignment").select("*").in("course_id", courseIds),
   ]);
-  
+
   // Handle errors
   if (quizResult.error) {
     console.error("Error fetching quizzes:", quizResult.error);
     quizResult.data = [];
   }
-  
+
   if (assignmentResult.error) {
     console.error("Error fetching assignments:", assignmentResult.error);
     assignmentResult.data = [];
   }
-  
+
   // Get course activities in an efficient way
   let activitiesData = [];
   if (!cache.courseActivities) {
     // First get the course_activity mappings
-    const { data: courseActivities, error: courseActivityError } = await supaClient
-      .from("course_activity")
-      .select("*")
-      .in("course_id", courseIds);
-    
+    const { data: courseActivities, error: courseActivityError } =
+      await supaClient
+        .from("course_activity")
+        .select("*")
+        .in("course_id", courseIds);
+
     if (courseActivityError) {
       console.error("Error fetching course activities:", courseActivityError);
     } else if (courseActivities && courseActivities.length > 0) {
       // Store in cache
       cache.courseActivities = courseActivities;
-      
+
       // Get the activity IDs
-      const activityIds = courseActivities.map(ca => ca.activity_id);
-      
+      const activityIds = courseActivities.map((ca) => ca.activity_id);
+
       // Fetch the activities
       const { data: activities, error: activityError } = await supaClient
         .from("activity")
         .select("*")
         .in("activity_id", activityIds);
-      
+
       if (activityError) {
         console.error("Error fetching activities:", activityError);
       } else if (activities) {
         // Map activities to include course info
-        activitiesData = activities.map(activity => {
-          const courseActivity = courseActivities.find(ca => ca.activity_id === activity.activity_id);
+        activitiesData = activities.map((activity) => {
+          const courseActivity = courseActivities.find(
+            (ca) => ca.activity_id === activity.activity_id
+          );
           const courseId = courseActivity ? courseActivity.course_id : null;
-          
+
           return {
             ...activity,
             course_id: courseId,
-            course_name: getCourseName(courseId)
+            course_name: getCourseName(courseId),
           };
         });
       }
     }
   }
-  
+
   // Filter for items within next week
-  const quizzes = quizResult.data.filter(quiz => {
+  const quizzes = quizResult.data.filter((quiz) => {
     const quizDueDate = quiz.quiz_dueDateTime || quiz.quiz_duedatetime;
     return isWithinNextWeek(quizDueDate);
   });
-  
-  const assignments = assignmentResult.data.filter(assignment => 
+
+  const assignments = assignmentResult.data.filter((assignment) =>
     isWithinNextWeek(assignment.assign_duedate)
   );
-  
-  const activities = activitiesData.filter(activity => 
+
+  const activities = activitiesData.filter((activity) =>
     isWithinNextWeek(activity.activity_duedate)
   );
-  
+
   return { quizzes, assignments, activities };
 }
 
 // Get semester progress data
 async function getSemesterProgress() {
   const semesterProgress = document.querySelector(".semester-progress-fill");
-  const semesterProgressPercentage = document.querySelector(".semester-progress-percentage");
-  const semesterProgressDate = document.querySelector(".semester-progress-date");
-  
+  const semesterProgressPercentage = document.querySelector(
+    ".semester-progress-percentage"
+  );
+  const semesterProgressDate = document.querySelector(
+    ".semester-progress-date"
+  );
+
   try {
     // Load initial data if not already loaded
     if (!cache.studentCourses) {
-  
-      
       const loaded = await loadInitialData();
       if (!loaded) {
         semesterProgress.style.width = "0%";
@@ -484,7 +518,7 @@ async function getSemesterProgress() {
         return;
       }
     }
-    
+
     const courseIds = getStudentCourseIds();
     // Fetch sessions for all courses in one go
     const { data, error } = await supaClient
@@ -492,7 +526,7 @@ async function getSemesterProgress() {
       .select("*")
       .in("course_id", courseIds)
       .order("session_time");
-    
+
     if (error) {
       console.error("Error fetching session data:", error);
       semesterProgress.style.width = "0%";
@@ -500,37 +534,41 @@ async function getSemesterProgress() {
       semesterProgressDate.textContent = "Error loading sessions";
       return;
     }
-    
+
     if (data && data.length > 0) {
-      
       // Parse dates properly to ensure correct calculations
-      const allSessions = data.map(session => {
+      const allSessions = data.map((session) => {
         return {
           ...session,
-          date: new Date(session.session_time)
+          date: new Date(session.session_time),
         };
       });
-      
+
       // Sort sessions by date
       allSessions.sort((a, b) => a.date - b.date);
-      
+
       // Divide sessions into first and second semester
       const firstSessionDate = allSessions[0].date;
       const lastSessionDate = allSessions[allSessions.length - 1].date;
-      
+
       // Calculate the midpoint between first and last session
       const totalMilliseconds = lastSessionDate - firstSessionDate;
-      const midpointDate = new Date(firstSessionDate.getTime() + totalMilliseconds / 2);
-      
-      
+      const midpointDate = new Date(
+        firstSessionDate.getTime() + totalMilliseconds / 2
+      );
+
       // Split sessions into first and second semester
-      const firstSemesterSessions = allSessions.filter(session => session.date < midpointDate);
-      const secondSemesterSessions = allSessions.filter(session => session.date >= midpointDate);
+      const firstSemesterSessions = allSessions.filter(
+        (session) => session.date < midpointDate
+      );
+      const secondSemesterSessions = allSessions.filter(
+        (session) => session.date >= midpointDate
+      );
       // Determine current semester
       const currentDate = new Date();
       let currentSemesterSessions;
       let semesterName;
-      
+
       if (currentDate < midpointDate) {
         currentSemesterSessions = firstSemesterSessions;
         semesterName = "First Semester";
@@ -538,7 +576,7 @@ async function getSemesterProgress() {
         currentSemesterSessions = secondSemesterSessions;
         semesterName = "Second Semester";
       }
-      
+
       if (currentSemesterSessions.length === 0) {
         console.warn("No sessions found for the current semester");
         semesterProgress.style.width = "0%";
@@ -546,11 +584,12 @@ async function getSemesterProgress() {
         semesterProgressDate.textContent = "0/0 weeks";
         return;
       }
-      
+
       // Calculate progress for the current semester
       const semesterStartDate = currentSemesterSessions[0].date;
-      const semesterEndDate = currentSemesterSessions[currentSemesterSessions.length - 1].date;
-      
+      const semesterEndDate =
+        currentSemesterSessions[currentSemesterSessions.length - 1].date;
+
       // Helper function to get week number of year for a date
       const getWeekNumber = (date) => {
         // Create a copy of the date to avoid modifying the original
@@ -562,17 +601,19 @@ async function getSemesterProgress() {
         // Get first day of year
         const yearStart = new Date(Date.UTC(dateCopy.getUTCFullYear(), 0, 1));
         // Calculate full weeks to nearest Thursday
-        const weekNumber = Math.ceil((((dateCopy - yearStart) / 86400000) + 1) / 7);
-        
+        const weekNumber = Math.ceil(
+          ((dateCopy - yearStart) / 86400000 + 1) / 7
+        );
+
         // Return array of year and week number
         return [dateCopy.getUTCFullYear(), weekNumber];
       };
-      
+
       // Calculate weeks for current semester
       const startWeekInfo = getWeekNumber(semesterStartDate);
       const endWeekInfo = getWeekNumber(semesterEndDate);
       const currentWeekInfo = getWeekNumber(currentDate);
-      
+
       // Calculate total number of weeks in semester
       let totalWeeks = 0;
       if (startWeekInfo[0] === endWeekInfo[0]) {
@@ -583,7 +624,7 @@ async function getSemesterProgress() {
         const weeksInStartYear = 52 - startWeekInfo[1] + 1;
         totalWeeks = weeksInStartYear + endWeekInfo[1];
       }
-      
+
       // Calculate elapsed weeks
       let elapsedWeeks = 0;
       if (startWeekInfo[0] === currentWeekInfo[0]) {
@@ -594,25 +635,25 @@ async function getSemesterProgress() {
         const weeksInStartYear = 52 - startWeekInfo[1] + 1;
         elapsedWeeks = weeksInStartYear + currentWeekInfo[1];
       }
-      
+
       // Ensure elapsedWeeks isn't greater than totalWeeks
       elapsedWeeks = Math.min(elapsedWeeks, totalWeeks);
-      
+
       // Handle edge case where elapsed weeks is negative (current date before semester start)
       if (elapsedWeeks < 0) {
         elapsedWeeks = 0;
       }
-      
+
       // Calculate progress percentage
       const progressPercentage = (elapsedWeeks / totalWeeks) * 100;
       // Round to nearest whole number for display
       const roundedPercentage = Math.round(progressPercentage);
-      
+
       // Update UI elements
       semesterProgress.style.width = `${roundedPercentage}%`;
       semesterProgressPercentage.textContent = `${roundedPercentage}%`;
       semesterProgressDate.textContent = `${elapsedWeeks}/${totalWeeks} weeks`;
-      
+
       // For debugging - show weeks calculation
       // console.log(`Semester: ${semesterName}`);
       // console.log(`Start week: ${startWeekInfo[1]} (${startWeekInfo[0]})`);
@@ -641,26 +682,31 @@ async function getSemesterProgress() {
 async function getTodayProgress() {
   try {
     const todaySessions = await fetchStudentSessionData();
-    
+
     // Get current date and time
     const now = new Date();
-    
+
     if (todaySessions.length === 0) {
       updateProgressUI(0, "No sessions scheduled for today");
       return;
     }
-    
+
     // Count completed sessions (sessions whose time has passed)
-    const completedSessions = todaySessions.filter(session => {
+    const completedSessions = todaySessions.filter((session) => {
       const sessionTime = new Date(session.session_time);
       return sessionTime < now;
     });
-    
+
     // Calculate progress percentage
-    const progressPercentage = Math.round((completedSessions.length / todaySessions.length) * 100);
-    
+    const progressPercentage = Math.round(
+      (completedSessions.length / todaySessions.length) * 100
+    );
+
     // Update the UI with the progress
-    updateProgressUI(progressPercentage, `${completedSessions.length}/${todaySessions.length} completed`);
+    updateProgressUI(
+      progressPercentage,
+      `${completedSessions.length}/${todaySessions.length} completed`
+    );
   } catch (error) {
     console.error("Error getting today's progress:", error);
     updateProgressUI(0, "Error");
@@ -669,9 +715,11 @@ async function getTodayProgress() {
 
 // Helper function to update the progress UI
 function updateProgressUI(percentage, text) {
-  const progressFill = document.querySelector('.today-progress-fill');
-  const progressPercentage = document.querySelector('.today-progress-percentage');
-  const progressText = document.querySelector('.today-progress-text');
+  const progressFill = document.querySelector(".today-progress-fill");
+  const progressPercentage = document.querySelector(
+    ".today-progress-percentage"
+  );
+  const progressText = document.querySelector(".today-progress-text");
   if (progressFill && progressPercentage) {
     progressFill.style.width = `${percentage}%`;
     progressPercentage.textContent = `${percentage}%`;
@@ -693,14 +741,14 @@ function updateProgressUI(percentage, text) {
 //   try {
 //     const sessions = await fetchStudentSessionData();
 //     console.log(sessions);
-    
+
 //     if (sessions.length === 0) {
 //       scheduleGrid.innerHTML = '<div class="no-sessions">No sessions scheduled for today</div>';
 //       return;
 //     }
 
 //     let markup = "";
-    
+
 //     sessions.forEach((session) => {
 //       const formattedTime = formatSessionTime(session.session_time);
 //       markup += `
@@ -725,23 +773,25 @@ async function renderStudentSession() {
   }
 
   // Show loading indicator
-  scheduleGrid.innerHTML = '<div class="loading-spinner" style="grid-column: span 2;"></div>';
+  scheduleGrid.innerHTML =
+    '<div class="loading-spinner" style="grid-column: span 2;"></div>';
 
   try {
     // Make sure initial data is loaded
     if (!cache.studentCourses) {
       await loadInitialData();
     }
-    
+
     const sessions = await fetchStudentSessionData();
-    
+
     if (!sessions || sessions.length === 0) {
-      scheduleGrid.innerHTML = '<div class="no-sessions">No sessions scheduled for today</div>';
+      scheduleGrid.innerHTML =
+        '<div class="no-sessions">No sessions scheduled for today</div>';
       return;
     }
 
     let markup = "";
-    
+
     sessions.forEach((session) => {
       const formattedTime = formatSessionTime(session.session_time);
       markup += `
@@ -755,7 +805,8 @@ async function renderStudentSession() {
     scheduleGrid.innerHTML = markup;
   } catch (error) {
     console.error("Error rendering today's sessions:", error);
-    scheduleGrid.innerHTML = '<div class="error">Failed to load today\'s sessions</div>';
+    scheduleGrid.innerHTML =
+      '<div class="error">Failed to load today\'s sessions</div>';
   }
 }
 // Render weekly deadlines
@@ -793,12 +844,12 @@ async function renderWeeklyDeadlines() {
       try {
         // Handle potential field name variations (quiz_dueDateTime vs quiz_duedatetime)
         const quizDueDate = quiz.quiz_dueDateTime || quiz.quiz_duedatetime;
-        
+
         if (!quizDueDate) {
           console.warn(`Quiz ${quiz.quiz_id} has no due date, skipping`);
           continue;
         }
-        
+
         deadlineItems.push({
           title: getCourseName(quiz.course_id),
           type: "Quiz: " + quiz.quiz_title,
@@ -843,12 +894,12 @@ async function renderWeeklyDeadlines() {
 
     // Take all items
     const itemsToShow = deadlineItems;
-    
+
     // Hide buttons if fewer than 5 items
     if (itemsToShow.length < 5) {
       document.querySelector(".nav-buttons").style.display = "none";
     }
-    
+
     // Display the deadline items
     if (itemsToShow.length > 0) {
       itemsToShow.forEach((item) => {
@@ -856,11 +907,13 @@ async function renderWeeklyDeadlines() {
         deadlineContainer.appendChild(box);
       });
     } else {
-      deadlineContainer.innerHTML = '<div class="no-deadlines">No deadlines for the next week</div>';
+      deadlineContainer.innerHTML =
+        '<div class="no-deadlines">No deadlines for the next week</div>';
     }
   } catch (error) {
     console.error("Error rendering deadlines:", error);
-    deadlineContainer.innerHTML = '<div class="error">Failed to load deadlines</div>';
+    deadlineContainer.innerHTML =
+      '<div class="error">Failed to load deadlines</div>';
   }
 }
 
@@ -879,14 +932,16 @@ async function getStudentActivityCount() {
 
     if (data) {
       const totalActivities = data.length;
-      const submittedActivities = data.filter(activity => activity.activity_path !== null).length;
+      const submittedActivities = data.filter(
+        (activity) => activity.activity_path !== null
+      ).length;
 
       return {
         totalActivities,
-        submittedActivities
+        submittedActivities,
       };
     }
-    
+
     return { totalActivities: 0, submittedActivities: 0 };
   } catch (error) {
     console.error("Error in getStudentActivityCount:", error);
@@ -909,14 +964,16 @@ async function getStudentAssignmentCount() {
 
     if (data) {
       const totalAssignments = data.length;
-      const submittedAssignments = data.filter(assignment => assignment.assign_path !== null).length;
+      const submittedAssignments = data.filter(
+        (assignment) => assignment.assign_path !== null
+      ).length;
 
       return {
         totalAssignments,
-        submittedAssignments
+        submittedAssignments,
       };
     }
-    
+
     return { totalAssignments: 0, submittedAssignments: 0 };
   } catch (error) {
     console.error("Error in getStudentAssignmentCount:", error);
@@ -933,14 +990,14 @@ async function getStudentAssignmentCount() {
 //     getStudentAssignmentCount();
 //     getSemesterProgress();
 //     getTodayProgress();
-    
+
 //     // You can add other initialization code here
 
 //   }
-  
-  // Run when page loads
-  // document.addEventListener("DOMContentLoaded", initializePage);
-  async function initializePage() {
+
+// Run when page loads
+// document.addEventListener("DOMContentLoaded", initializePage);
+async function initializePage() {
   try {
     // First load the initial data
     getInstitutionId(studentId);
@@ -949,17 +1006,16 @@ async function getStudentAssignmentCount() {
       console.error("Failed to load initial data");
       return;
     }
-    
+
     // Then render components that depend on that data
     await renderWeeklyDeadlines();
     await renderStudentSession();
     await getSemesterProgress();
     await getTodayProgress();
-    
+
     // Get other stats
     getStudentActivityCount();
     getStudentAssignmentCount();
-    
   } catch (error) {
     console.error("Error initializing page:", error);
   }
@@ -972,22 +1028,21 @@ document.addEventListener("DOMContentLoaded", initializePage);
 //   const deadlineBoxes = document.querySelector('.deadlineBoxes');
 //   const prevButton = document.getElementById('prev');
 //   const nextButton = document.getElementById('next');
-  
+
 //   nextButton.addEventListener('click', function() {
 //       deadlineBoxes.scrollBy({ left: 350, behavior: 'smooth' });
 //   });
-  
+
 //   prevButton.addEventListener('click', function() {
 //       deadlineBoxes.scrollBy({ left: -350, behavior: 'smooth' });
-      
-      
+
 //   });
 // });
-document.addEventListener("DOMContentLoaded", function() {
-  const deadlineBoxes = document.querySelector('.deadlineBoxes');
-  const prevButton = document.getElementById('prev');
-  const nextButton = document.getElementById('next');
-  deadlineBoxes.addEventListener('wheel', function (event) {
+document.addEventListener("DOMContentLoaded", function () {
+  const deadlineBoxes = document.querySelector(".deadlineBoxes");
+  const prevButton = document.getElementById("prev");
+  const nextButton = document.getElementById("next");
+  deadlineBoxes.addEventListener("wheel", function (event) {
     if (event.deltaY !== 0) {
       event.preventDefault();
       deadlineBoxes.scrollLeft += event.deltaY;
@@ -995,37 +1050,37 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   // Get the width of a single box plus its gap
   function getScrollDistance() {
-    const box = document.querySelector('.deadlineBoxes .box');
+    const box = document.querySelector(".deadlineBoxes .box");
     if (!box) return 0;
-    
+
     // Get the actual width of a box
     const boxWidth = box.offsetWidth;
-    
+
     // Get the gap value from computed style
     const computedStyle = window.getComputedStyle(deadlineBoxes);
     const gap = parseInt(computedStyle.gap) || 0;
-      
+
     // Return single box width + gap
     return boxWidth + gap;
   }
 
-  nextButton.addEventListener('click', function() {
+  nextButton.addEventListener("click", function () {
     const scrollDistance = getScrollDistance();
-    deadlineBoxes.scrollBy({ 
-      left: scrollDistance, 
-      behavior: 'smooth' 
+    deadlineBoxes.scrollBy({
+      left: scrollDistance,
+      behavior: "smooth",
     });
   });
-  
-  prevButton.addEventListener('click', function() {
+
+  prevButton.addEventListener("click", function () {
     const scrollDistance = getScrollDistance();
-    deadlineBoxes.scrollBy({ 
-      left: -scrollDistance, 
-      behavior: 'smooth' 
+    deadlineBoxes.scrollBy({
+      left: -scrollDistance,
+      behavior: "smooth",
     });
   });
-  
+
   // Hide scrollbar but keep functionality
-  deadlineBoxes.style.scrollbarWidth = 'none';
-  deadlineBoxes.style.msOverflowStyle = 'none';
+  deadlineBoxes.style.scrollbarWidth = "none";
+  deadlineBoxes.style.msOverflowStyle = "none";
 });

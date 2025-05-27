@@ -259,7 +259,9 @@ async function renderAssignments() {
             for="file-${index}"
           >
              <i class="fi fi-bs-cloud-download upload-icon"></i>
-              <p>Drag and drop ${isInstitutionSchool() ? "homework" : "assignment"} file here or<br/><p class="upload-btn">  Upload File</p> </p>
+              <p>Drag and drop ${
+                isInstitutionSchool() ? "homework" : "assignment"
+              } file here or<br/><p class="upload-btn">  Upload File</p> </p>
             <div class="text">
               <span>Click to upload ${
                 isInstitutionSchool() ? "homework" : "assignment"
@@ -388,13 +390,9 @@ async function renderAssignments() {
   // Add event listeners to view instructions buttons
   const instructionBtns = document.querySelectorAll(".instructions-btn");
   instructionBtns.forEach((btn) => {
-    console.log(btn);
     btn.addEventListener("click", () => {
       const assignmentId = btn.dataset.assignmentId;
-      console.log(assignmentId);
       const assignment = assignments.find((a) => a.assign_id === +assignmentId);
-      console.log(assignment);
-      console.log(assignments);
       if (assignment) {
         // Create modal for instructions
         const modal = document.createElement("div");
@@ -763,7 +761,7 @@ async function getAssignmentById(assignmentId) {
 // Initialize page
 document.addEventListener("DOMContentLoaded", () => {
   const assignmentsContainer = document.querySelector(".assignments-container");
-  assignmentsContainer.addEventListener('wheel', function (event) {
+  assignmentsContainer.addEventListener("wheel", function (event) {
     if (event.deltaY !== 0) {
       event.preventDefault();
       assignmentsContainer.scrollLeft += event.deltaY;

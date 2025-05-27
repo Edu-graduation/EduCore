@@ -1,7 +1,6 @@
 import { supaClient } from "./app.js";
 const title = document.querySelector(".title");
 const courseId = sessionStorage.getItem("courseId");
-console.log(courseId);
 async function getCourseName() {
   const { data, error } = await supaClient
     .from("course")
