@@ -469,7 +469,6 @@ textarea {
   text-wrap: nowrap;
   display: block;
   cursor: pointer;
-  width: 120px;
   background: linear-gradient(to bottom right, var(--color-grid-1), var(--color-grid-2));
   color: #FFF;
   font-family: inherit;
